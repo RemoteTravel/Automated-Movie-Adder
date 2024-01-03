@@ -37,6 +37,7 @@ def main():
         addToShowSheet(jsonData, sh, score, startDate, endDate, comments)
     else:
         addToMovieSheet(jsonData, sh, score, startDate, endDate, comments)
+        # changes
 
 
 def getData(session, title, movieOrSeries, year):  # returns array of data
