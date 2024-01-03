@@ -25,12 +25,11 @@ def main():
     s = requests.Session()
     title = input("Enter title: ")
     movieOrSeries = input("Enter movie or series: ")
-    year = input("Enter year of release: ")
     score = input("Enter your score: ")
     startDate = input("Enter start date: ")
     endDate = input("Enter end date: ")
     comments = input("Enter comments: ")
-    jsonData = getData(s, title, movieOrSeries, year)
+    jsonData = getData(s, title, movieOrSeries)
     sa = gspread.service_account()
     sh = sa.open(f"Media Sheet {curYear}")
     if movieOrSeries.startswith("s") or movieOrSeries.startswith("S"):
@@ -40,7 +39,7 @@ def main():
         # changes
 
 
-def getData(session, title, movieOrSeries, year):  # returns array of data
+def getData(session, title, movieOrSeries):  # returns array of data
     url = f"http://www.omdbapi.com/?apikey={creds.apiKey}&"
     newURL = url + f"t={title}&"
     inputType = ""
@@ -48,8 +47,6 @@ def getData(session, title, movieOrSeries, year):  # returns array of data
         newURL = newURL + "type=movie&"
     elif movieOrSeries.startswith("s") or movieOrSeries.startswith("S"):
         newURL = newURL + "type=series&"
-    if type(year) == int and year > 1887:
-        newURL = newURL + f"y={year}&"
     r = session.get(newURL)
     # print(r.json())
     return r.json()
