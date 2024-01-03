@@ -63,7 +63,7 @@ def nextBlankRow(worksheet):
 def addToMovieSheet(json, sh, score, startDate, endDate, comments):
     wks = sh.worksheet("Movies")
     newScore = score
-    if type(score) != int or score < 0 or score > 10:
+    if not score.isdigit() or int(score) < 0 or int(score) > 10:
         newScore = ""
     newStart = ""
     if startDate.startswith("t") or startDate.startswith("T"):
@@ -111,6 +111,47 @@ def addToMovieSheet(json, sh, score, startDate, endDate, comments):
 
 def addToShowSheet(json, sh, score, startDate, endDate, comments):
     wks = sh.worksheet("Shows")
+    # print("json", json)
+    newScore = score
+    if not score.isdigit() or int(score) < 0 or int(score) > 10:
+        newScore = ""
+    newStart = ""
+    if startDate.startswith("t") or startDate.startswith("T"):
+        newStart = datetime.now().strftime("%B %#d %Y")
+    newEnd = ""
+    if endDate.startswith("t") or endDate.startswith("T"):
+        newEnd = datetime.now().strftime("%B %#d %Y")
+    if startDate.startswith("y") or startDate.startswith("Y"):
+        yesterday = date.today() - timedelta(days=1)
+        newStart = yesterday.strftime("%B %#d %Y")
+    if endDate.startswith("y") or endDate.startswith("Y"):
+        yesterday = date.today() - timedelta(days=1)
+        newEnd = yesterday.strftime("%B %#d %Y")
+    nextRow = nextBlankRow(wks)
+    title = json["Title"]
+    genre = json["Genre"]
+    rated = json["Rated"]
+    imdbVotesNoComma = json["imdbVotes"].replace(",", "")
+    votesRoundThou = str(int(imdbVotesNoComma) // 1000)
+    releasedSplit = json["Released"].split(" ")
+    day = releasedSplit[0]
+    if releasedSplit[0].startswith("0"):
+        day = releasedSplit[0].replace("0", "")
+    newReleased = monthDict[releasedSplit[1]] + f" {day} " + f"{releasedSplit[2]}"
+
+    valueArr = [
+        title,
+        newScore,
+        "",
+        newStart,
+        newEnd,
+        genre,
+        rated,
+        votesRoundThou,
+        newReleased,
+        comments,
+    ]
+    wks.append_row(valueArr, table_range=f"A{nextRow}:J{nextRow}")
 
 
 main()
