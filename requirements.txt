@@ -1,0 +1,4 @@
+argparse
+gspread
+requests
+datetime
